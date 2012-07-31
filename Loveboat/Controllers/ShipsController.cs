@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using Loveboat.Messages.Commands;
+using Loveboat.Domain.Configuration;
+using Loveboat.Domain.Messages.Commands;
+using Loveboat.Domain.ViewModels;
 using Loveboat.ViewModelCache;
-using Loveboat.ViewModels;
-using NServiceBus;
 
 namespace Loveboat.Controllers
 {
@@ -13,24 +13,29 @@ namespace Loveboat.Controllers
         private readonly IViewModelCache viewModelCache;
         private readonly IBus bus;
 
-        public ShipsController(IViewModelCache viewModelCache, IBus bus)
+        public ShipsController(/*IViewModelCache viewModelCache, */IBus bus)
         {
-            if (viewModelCache == null) throw new ArgumentNullException("viewModelCache");
+            //if (viewModelCache == null) throw new ArgumentNullException("viewModelCache");
             if (bus == null) throw new ArgumentNullException("bus");
-            this.viewModelCache = viewModelCache;
+            //this.viewModelCache = viewModelCache;
             this.bus = bus;
         }
 
         [HttpGet]
         public ViewResult Index()
         {
-            var ships = viewModelCache.GetAll<ShipViewModel>();
+            /*var ships = viewModelCache.GetAll<ShipViewModel>();
             var model = new ShipsViewModel() {Ships = ships};
 
             var fake = (ShipViewModel)TempData["Fake"];
             if(fake!=null)
                 model.Ships.First(s => s.Id == fake.Id).Location = fake.Location;
 
+            return View("Index", model);*/
+            var command = new ArrivalCommand() {ArrivalPort = "Port", ArrivingShipId = Guid.NewGuid()};
+            bus.Send(command);
+
+            var model = new ShipsViewModel() { Ships = Enumerable.Empty<ShipViewModel>() };
             return View("Index", model);
         }
 
@@ -48,7 +53,7 @@ namespace Loveboat.Controllers
         }
 
         [HttpPost]
-        public ActionResult Depart(DepatureCommand command)
+        public ActionResult Depart(DepartureCommand command)
         {
             if (!ModelState.IsValid)
                 return Index();

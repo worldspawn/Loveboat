@@ -1,9 +1,10 @@
-﻿using Loveboat.Messages.Commands;
-using NServiceBus;
+﻿using CQRS.Core;
+using CQRS.Core.Infrastructure;
+using Loveboat.Domain.Messages.Commands;
 
 namespace Loveboat.Domain.CommandHandlers
 {
-    public class ArrivalCommandHandler : IHandleMessages<ArrivalCommand>
+    public class ArrivalCommandHandler : IMessageHandler<ArrivalCommand>
     {
         private readonly IShipRepository repository;
 

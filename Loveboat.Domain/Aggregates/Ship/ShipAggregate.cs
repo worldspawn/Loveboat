@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Loveboat.Messages.Commands;
-using Loveboat.Messages.Events;
-using NServiceBus;
+using CQRS.Core;
+using CQRS.Core.Aggregates;
+using Loveboat.Domain.Messages.Commands;
+using Loveboat.Domain.Messages.Events;
 
 namespace Loveboat.Domain.Aggregates.Ship
 {
@@ -15,7 +16,7 @@ namespace Loveboat.Domain.Aggregates.Ship
 
         protected string CurrentLocation;
 
-        public void HandleCommand(DepatureCommand command)
+        public void HandleCommand(DepartureCommand command)
         {
             if (CurrentLocation == "At Sea")
                 throw new ApplicationException();

@@ -1,11 +1,10 @@
-﻿using Loveboat.Messages.Events;
-using Loveboat.ViewModels;
-using NServiceBus;
+﻿using Loveboat.Domain.Messages.Events;
+using Loveboat.Domain.ViewModels;
 using PetaPoco;
 
 namespace Loveboat.ViewModelCache.EventHandlers
 {
-    public class DepartedEventHandler : IHandleMessages<DepartedEvent>
+    public class DepartedEventHandler //: IHandleMessages<DepartedEvent>
     {
         public DepartedEventHandler()
         {

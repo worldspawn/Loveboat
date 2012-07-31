@@ -1,6 +1,14 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Configuration;
+using System.Reflection;
+using System.Web.Mvc;
 using System.Web.Routing;
-using NServiceBus;
+using Autofac;
+using Autofac.Integration.Mvc;
+using Loveboat.Domain.CommandHandlers;
+using Loveboat.Domain.Configuration;
+using Loveboat.Domain.Messages.Commands;
+using Loveboat.Messages;
 
 namespace Loveboat
 {
@@ -33,17 +41,34 @@ namespace Loveboat
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
-            NServiceBus.Configure.With()
-                .Log4Net()
-                .StructureMapBuilder()
-                .XmlSerializer()
-                .MsmqTransport()
-                    .IsTransactional(false)
-                    .PurgeOnStartup(false)
-                .UnicastBus()
-                    .ImpersonateSender(false)
-                .CreateBus()
-                .Start();
+            var builder = new ContainerBuilder();
+
+            var busEndPoint = ConfigurationManager.AppSettings["BusEndPointUri"];
+
+            builder.RegisterModule(new MassTransitModule(busEndPoint));
+            builder.RegisterModule<EventStoreModule>();
+
+            builder.RegisterType<ArrivalCommandHandler>();
+
+            builder.RegisterControllers(Assembly.GetExecutingAssembly());
+
+            var container = builder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
+            var bus = container.Resolve<IBus>();
+
+            RegisterMessageHandler<ArrivalCommand, ArrivalCommandHandler>(bus, container);
+        }
+
+        void RegisterMessageHandler<TMessage, TMessageHandler>(IBus bus, IContainer container) 
+            where TMessageHandler : IMessageHandler<TMessage>
+            where TMessage : class, IMessage
+        {
+            bus.RegisterHandler<TMessage>(msg =>
+                                              {
+                                                  var handler = container.Resolve<TMessageHandler>();
+                                                  handler.Handle(msg);
+                                              });
         }
     }
 }

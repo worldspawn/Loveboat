@@ -1,9 +1,9 @@
-﻿using Loveboat.Messages.Commands;
-using NServiceBus;
+﻿using CQRS.Core.Infrastructure;
+using Loveboat.Domain.Messages.Commands;
 
 namespace Loveboat.Domain.CommandHandlers
 {
-    public class DepartureCommandHandler : IHandleMessages<DepatureCommand>
+    public class DepartureCommandHandler //: IHandleMessages<DepartureCommand>
     {
         private readonly IShipRepository repository;
 
@@ -12,7 +12,7 @@ namespace Loveboat.Domain.CommandHandlers
             this.repository = repository;
         }
 
-        public void Handle(DepatureCommand message)
+        public void Handle(DepartureCommand message)
         {
             var aggregate = repository.GetById(message.DepartingShipId);
 

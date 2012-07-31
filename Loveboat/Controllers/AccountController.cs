@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
 using System.Web.Security;
-using Loveboat.ViewModels;
+using Loveboat.Domain.ViewModels;
 
 namespace Loveboat.Controllers
 {

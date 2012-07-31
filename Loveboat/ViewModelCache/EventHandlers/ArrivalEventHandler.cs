@@ -1,11 +1,10 @@
-﻿using Loveboat.Messages.Events;
-using Loveboat.ViewModels;
-using NServiceBus;
+﻿using Loveboat.Domain.Messages.Events;
+using Loveboat.Domain.ViewModels;
 using PetaPoco;
 
 namespace Loveboat.ViewModelCache.EventHandlers
 {
-    public class ArrivalEventHandler : IHandleMessages<ArrivedEvent>
+    public class ArrivalEventHandler//: IHandleMessages<ArrivedEvent>
     {
         public ArrivalEventHandler()
         {
