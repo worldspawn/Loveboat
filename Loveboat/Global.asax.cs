@@ -1,17 +1,18 @@
-﻿using System;
-using System.Configuration;
-using System.Linq;
+﻿using System.Configuration;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
 using Autofac.Integration.Mvc;
-using CQRS.Core;
 using CQRS.Core.Configuration;
 using CQRS.Core.Infrastructure;
+using CQRS.Core.Messaging;
+using CQRS.Core.ViewModel;
 using Loveboat.Domain.CommandHandlers;
+using Loveboat.Domain.EventHandlers;
 using Loveboat.Domain.Messages.Commands;
+using Loveboat.Domain.Messages.Events;
 
 namespace Loveboat
 {
@@ -48,8 +49,11 @@ namespace Loveboat
             string busEndPoint = ConfigurationManager.AppSettings["BusEndPointUri"];
 
             builder.RegisterModule(new MassTransitModule(busEndPoint));
-            builder.RegisterModule(new EventStoreModule("test"));
-            builder.RegisterModule<RepositoryModule>();
+            builder.RegisterModule(new EventStoreModule("loveboat.events"));
+            builder.RegisterModule(new MongoModule("loveboat.dto.string", "loveboat.dto.databaseName"));
+            builder.RegisterModule(new RepositoryModule(typeof (EventRepository<>),
+                                                        typeof (IEventRepository<>)));
+            builder.RegisterModule(new RepositoryModule(typeof (DtoRepository<>), typeof (IDtoRepository<>)));
 
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
 
@@ -59,7 +63,15 @@ namespace Loveboat
             var commandHost = new MessageHost(container);
             commandHost.RegisterMessageHandlers(
                 new MessageRegistration<ArrivalCommand, ArrivalCommandHandler>(),
-                new MessageRegistration<DepartureCommand, DepartureCommandHandler>()
+                new MessageRegistration<DepartureCommand, DepartureCommandHandler>(),
+                new MessageRegistration<ShipCreatedCommand, ShipCreatedCommandHandler>()
+                );
+
+            var eventHost = new MessageHost(container);
+            eventHost.RegisterMessageHandlers(
+                new MessageRegistration<ArrivedEvent, ArrivalEventHandler>(),
+                new MessageRegistration<DepartedEvent, DepartedEventHandler>(),
+                new MessageRegistration<ShipCreatedEvent, ShipCreatedEventHandler>()
                 );
         }
     }

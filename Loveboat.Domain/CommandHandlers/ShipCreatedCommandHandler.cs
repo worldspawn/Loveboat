@@ -5,21 +5,20 @@ using Loveboat.Domain.Messages.Commands;
 
 namespace Loveboat.Domain.CommandHandlers
 {
-    public class DepartureCommandHandler : ICommandHandler<DepartureCommand>
+    public class ShipCreatedCommandHandler : ICommandHandler<ShipCreatedCommand>
     {
         private readonly IEventRepository<ShipAggregate> _eventRepository;
 
-        public DepartureCommandHandler(IEventRepository<ShipAggregate> eventRepository)
+        public ShipCreatedCommandHandler(IEventRepository<ShipAggregate> eventRepository)
         {
             _eventRepository = eventRepository;
         }
 
         #region ICommandHandler<DepartureCommand> Members
 
-        public void Handle(DepartureCommand message)
+        public void Handle(ShipCreatedCommand message)
         {
-            ShipAggregate aggregate = _eventRepository.GetById(message.DepartingShipId);
-            aggregate.Depart();
+            ShipAggregate aggregate = ShipAggregate.Create(message.CurrentLocation);
             _eventRepository.Save(aggregate);
         }
 

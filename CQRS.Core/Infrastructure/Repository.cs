@@ -1,19 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CQRS.Core;
 using CQRS.Core.Aggregates;
-using CQRS.Core.Infrastructure;
 using EventStore;
 
-namespace Loveboat.Domain.Infrastructure
+namespace CQRS.Core.Infrastructure
 {
-    public abstract class Repository<T> : IRepository<T> where T : AggregateBase, new()
+    public class EventRepository<T> : IEventRepository<T> where T : AggregateBase<IEvent>, new()
     {
         private readonly IBus _bus;
         private readonly IStoreEvents _eventStore;
 
-        protected Repository(IBus bus, IStoreEvents eventStore)
+        public EventRepository(IBus bus, IStoreEvents eventStore)
         {
             if (bus == null) throw new ArgumentNullException("bus");
             if (eventStore == null) throw new ArgumentNullException("eventStore");
@@ -26,16 +24,16 @@ namespace Loveboat.Domain.Infrastructure
         public T GetById(Guid id)
         {
             var aggregate = new T();
-            IEnumerable<IEvent> eventsForAggreate = GetEventsFor(id);
+            var eventsForAggreate = GetEventsFor(id);
             aggregate.LoadFromEvents(id, eventsForAggreate);
             return aggregate;
         }
 
         public void Save(T aggregate)
         {
-            using (IEventStream stream = _eventStore.CreateStream(aggregate.Id))
+            using (var stream = _eventStore.CreateStream(aggregate.Id))
             {
-                foreach (IEvent uncommitedEvent in aggregate.UncommitedEvents)
+                foreach (var uncommitedEvent in aggregate.UncommitedEvents)
                 {
                     stream.Add(new EventMessage {Body = uncommitedEvent});
 

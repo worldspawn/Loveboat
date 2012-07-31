@@ -1,21 +1,27 @@
 ﻿using System;
 using CQRS.Core;
-using Loveboat.Domain.Messages.Commands;
 
 namespace Loveboat.Domain.Messages.Events
 {
     public class DepartedEvent : IEvent
     {
-        public DepartedEvent(Guid id)
+        private readonly Guid _shipId;
+        private readonly string _currentLocation;
+
+        public DepartedEvent(Guid shipId, string currentLocation)
         {
-            Id = id;
+            _shipId = shipId;
+            _currentLocation = currentLocation;
         }
 
-        public DepartedEvent(DepartureCommand command)
+        public string CurrentLocation
         {
-            Id = command.DepartingShipId;
+            get { return _currentLocation; }
         }
 
-        public Guid Id { get; set; }
+        public Guid ShipId
+        {
+            get { return _shipId; }
+        }
     }
 }

@@ -4,6 +4,6 @@ namespace CQRS.Core
 {
     public interface IEvent : IMessage
     {
-        Guid Id { get; set; }
+        //Guid Id { get; set; }
     }
 }

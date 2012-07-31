@@ -7,21 +7,32 @@ using Loveboat.Domain.Messages.Events;
 
 namespace Loveboat.Domain.Aggregates.Ship
 {
-    public class ShipAggregate : AggregateBase
+    public class ShipAggregate : AggregateBase<IEvent>
     {
         public ShipAggregate()
         {
             UncommitedEvents = new List<IEvent>();
+            MapEvent<DepartedEvent>(OnDeparted);
+        }
+
+        private ShipAggregate(string currentLocation)
+        {
+            ApplyChange(new ShipCreatedEvent(Id, currentLocation));
         }
 
         protected string CurrentLocation;
 
-        public void HandleCommand(DepartureCommand command)
+        public static ShipAggregate Create(string currentLocation)
+        {
+            return new ShipAggregate(currentLocation);
+        }
+
+        public void Depart()
         {
             if (CurrentLocation == "At Sea")
                 throw new ApplicationException();
 
-            ApplyChange(new DepartedEvent(command));
+            ApplyChange(new DepartedEvent(Id, "At Sea"));
         }
 
         public void HandleCommand(ArrivalCommand command)
@@ -37,9 +48,9 @@ namespace Loveboat.Domain.Aggregates.Ship
             CurrentLocation = arrivedEvent.ArrivalPort;
         }
 
-        public void HandleEvent(DepartedEvent departedEvent)
+        public void OnDeparted(DepartedEvent departedEvent)
         {
-            CurrentLocation = "At Sea";
-        }      
+            CurrentLocation = departedEvent.CurrentLocation;
+        }
     }
 }

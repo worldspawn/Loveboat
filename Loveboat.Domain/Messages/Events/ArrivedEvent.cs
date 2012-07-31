@@ -6,7 +6,6 @@ namespace Loveboat.Domain.Messages.Events
 {
     public class ArrivedEvent : IEvent
     {
-
         public string ArrivalPort { get; set; }
         public Guid Id { get; set; }
 

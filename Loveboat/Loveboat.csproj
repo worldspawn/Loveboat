@@ -87,16 +87,16 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="ViewModelCache\EventHandlers\DepartedEventHandler.cs" />
     <Compile Include="ViewModelCache\PetaPoco.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModelCache\EventHandlers\ArrivalEventHandler.cs" />
     <Compile Include="ViewModelCache\IViewModelCache.cs" />
     <Compile Include="ViewModelCache\ViewModelCache.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

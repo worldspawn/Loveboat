@@ -1,8 +1,9 @@
 using System;
+using CQRS.Core.ViewModel;
 
 namespace Loveboat.Domain.ViewModels
 {
-    public class ShipViewModel
+    public class ShipViewModel : IPersistedDto
     {
         public Guid Id { get; set; }
 

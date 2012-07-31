@@ -21,10 +21,10 @@ namespace CQRS.Core.Configuration
 
         public EventStoreModule(string connectionName, byte[] encryptionKey = null)
         {
+            if (connectionName == null) throw new ArgumentNullException("connectionName");
             _connectionName = connectionName;
             _encryptionKey = encryptionKey;
             _authorizationPipelineHook = new AuthorizationPipelineHook();
-            if (connectionName == null) throw new ArgumentNullException("connectionName");
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -41,7 +41,7 @@ namespace CQRS.Core.Configuration
                                          .HookIntoPipelineUsing(new[] {_authorizationPipelineHook})
                                          .UsingAsynchronousDispatchScheduler(context.Resolve<IDispatchCommits>())
                                          .Build();
-                                 }).As<IStoreEvents>();
+                                 }).As<IStoreEvents>().SingleInstance();
 
             base.Load(builder);
         }
