@@ -1,11 +1,10 @@
 ﻿using System;
-using CQRS.Core;
 using EventStore;
 using EventStore.Dispatcher;
 using Magnum.Reflection;
 using MassTransit;
 
-namespace Loveboat.Domain.Configuration
+namespace CQRS.Core.Configuration
 {
     public class MassTransitPublisher : IBus, IDispatchCommits
     {

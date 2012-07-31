@@ -1,6 +1,5 @@
 using Autofac;
 using EventStore.Dispatcher;
-using Loveboat.Domain.Configuration;
 using MassTransit;
 
 namespace CQRS.Core.Configuration

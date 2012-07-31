@@ -5,7 +5,6 @@ using CQRS.Core;
 using CQRS.Core.Aggregates;
 using CQRS.Core.Infrastructure;
 using EventStore;
-using Loveboat.Domain.Configuration;
 
 namespace Loveboat.Domain.Infrastructure
 {

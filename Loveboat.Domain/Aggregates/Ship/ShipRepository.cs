@@ -1,7 +1,6 @@
 ﻿using CQRS.Core;
 using CQRS.Core.Infrastructure;
 using EventStore;
-using Loveboat.Domain.Configuration;
 using Loveboat.Domain.Infrastructure;
 
 namespace Loveboat.Domain.Aggregates.Ship
