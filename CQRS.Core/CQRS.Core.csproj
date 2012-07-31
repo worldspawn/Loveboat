@@ -87,6 +87,7 @@
     <Compile Include="Configuration\MassTransitModule.cs" />
     <Compile Include="Configuration\MassTransitPublisher.cs" />
     <Compile Include="Configuration\MessageHost.cs" />
+    <Compile Include="Configuration\RepositoryModule.cs" />
     <Compile Include="IBus.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandHandler.cs" />

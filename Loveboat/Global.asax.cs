@@ -1,4 +1,6 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
+using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
@@ -7,6 +9,7 @@ using Autofac;
 using Autofac.Integration.Mvc;
 using CQRS.Core;
 using CQRS.Core.Configuration;
+using CQRS.Core.Infrastructure;
 using Loveboat.Domain.CommandHandlers;
 using Loveboat.Domain.Messages.Commands;
 
@@ -46,6 +49,7 @@ namespace Loveboat
 
             builder.RegisterModule(new MassTransitModule(busEndPoint));
             builder.RegisterModule(new EventStoreModule("test"));
+            builder.RegisterModule<RepositoryModule>();
 
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
 
