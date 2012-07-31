@@ -1,21 +1,21 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
 using Autofac.Integration.Mvc;
+using CQRS.Core;
+using CQRS.Core.Configuration;
 using Loveboat.Domain.CommandHandlers;
-using Loveboat.Domain.Configuration;
 using Loveboat.Domain.Messages.Commands;
-using Loveboat.Messages;
 
 namespace Loveboat
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
@@ -29,9 +29,8 @@ namespace Loveboat
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "Ships", action = "Index", id = UrlParameter.Optional } // Parameter defaults
-            );
-
+                new {controller = "Ships", action = "Index", id = UrlParameter.Optional} // Parameter defaults
+                );
         }
 
         protected void Application_Start()
@@ -43,32 +42,21 @@ namespace Loveboat
 
             var builder = new ContainerBuilder();
 
-            var busEndPoint = ConfigurationManager.AppSettings["BusEndPointUri"];
+            string busEndPoint = ConfigurationManager.AppSettings["BusEndPointUri"];
 
             builder.RegisterModule(new MassTransitModule(busEndPoint));
-            builder.RegisterModule<EventStoreModule>();
-
-            builder.RegisterType<ArrivalCommandHandler>();
+            builder.RegisterModule(new EventStoreModule("test"));
 
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
 
-            var container = builder.Build();
+            IContainer container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
-            var bus = container.Resolve<IBus>();
-
-            RegisterMessageHandler<ArrivalCommand, ArrivalCommandHandler>(bus, container);
-        }
-
-        void RegisterMessageHandler<TMessage, TMessageHandler>(IBus bus, IContainer container) 
-            where TMessageHandler : IMessageHandler<TMessage>
-            where TMessage : class, IMessage
-        {
-            bus.RegisterHandler<TMessage>(msg =>
-                                              {
-                                                  var handler = container.Resolve<TMessageHandler>();
-                                                  handler.Handle(msg);
-                                              });
+            var commandHost = new MessageHost(container);
+            commandHost.RegisterMessageHandlers(
+                new MessageRegistration<ArrivalCommand, ArrivalCommandHandler>(),
+                new MessageRegistration<DepartureCommand, DepartureCommandHandler>()
+                );
         }
     }
 }

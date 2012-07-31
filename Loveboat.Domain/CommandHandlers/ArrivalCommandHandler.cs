@@ -4,7 +4,7 @@ using Loveboat.Domain.Messages.Commands;
 
 namespace Loveboat.Domain.CommandHandlers
 {
-    public class ArrivalCommandHandler : IMessageHandler<ArrivalCommand>
+    public class ArrivalCommandHandler : ICommandHandler<ArrivalCommand>
     {
         private readonly IShipRepository repository;
 

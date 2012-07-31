@@ -1,4 +1,5 @@
 ﻿using System;
+using CQRS.Core;
 using EventStore;
 using EventStore.Dispatcher;
 using Magnum.Reflection;

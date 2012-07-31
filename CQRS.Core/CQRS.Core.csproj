@@ -86,9 +86,12 @@
     <Compile Include="Configuration\EventStoreModule.cs" />
     <Compile Include="Configuration\MassTransitModule.cs" />
     <Compile Include="Configuration\MassTransitPublisher.cs" />
+    <Compile Include="Configuration\MessageHost.cs" />
     <Compile Include="IBus.cs" />
     <Compile Include="ICommand.cs" />
+    <Compile Include="ICommandHandler.cs" />
     <Compile Include="IEvent.cs" />
+    <Compile Include="IEventHandler.cs" />
     <Compile Include="IMessage.cs" />
     <Compile Include="IMessageHandler.cs" />
     <Compile Include="Infrastructure\Hidden Magic\ALittleBitOfDynamicMagic.cs" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using Loveboat.Domain.Configuration;
+using CQRS.Core;
 using Loveboat.Domain.Messages.Commands;
 using Loveboat.Domain.ViewModels;
 using Loveboat.ViewModelCache;

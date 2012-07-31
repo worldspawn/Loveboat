@@ -1,7 +1,6 @@
 using System;
-using CQRS.Core;
 
-namespace Loveboat.Domain.Configuration
+namespace CQRS.Core
 {
     public interface IBus
     {

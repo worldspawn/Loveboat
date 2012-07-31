@@ -19,12 +19,11 @@ namespace CQRS.Core.Configuration
         private readonly string _connectionName;
         private readonly byte[] _encryptionKey;
 
-        public EventStoreModule(string connectionName, byte[] encryptionKey,
-                                AuthorizationPipelineHook authorizationPipelineHook)
+        public EventStoreModule(string connectionName, byte[] encryptionKey = null)
         {
             _connectionName = connectionName;
             _encryptionKey = encryptionKey;
-            _authorizationPipelineHook = authorizationPipelineHook ?? new AuthorizationPipelineHook();
+            _authorizationPipelineHook = new AuthorizationPipelineHook();
             if (connectionName == null) throw new ArgumentNullException("connectionName");
         }
 

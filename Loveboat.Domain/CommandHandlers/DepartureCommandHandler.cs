@@ -1,9 +1,10 @@
-﻿using CQRS.Core.Infrastructure;
+﻿using CQRS.Core;
+using CQRS.Core.Infrastructure;
 using Loveboat.Domain.Messages.Commands;
 
 namespace Loveboat.Domain.CommandHandlers
 {
-    public class DepartureCommandHandler //: IHandleMessages<DepartureCommand>
+    public class DepartureCommandHandler : ICommandHandler<DepartureCommand>
     {
         private readonly IShipRepository repository;
 
