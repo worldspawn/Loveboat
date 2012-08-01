@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using EventStore;
 using EventStore.Dispatcher;
 using Magnum.Reflection;
@@ -33,7 +36,18 @@ namespace CQRS.Core.Configuration
 
         void IDispatchCommits.Dispatch(Commit commit)
         {
-            commit.Events.ForEach(@event => { this.FastInvoke("PublishEvent", @event.Body); });
+            commit.Events.ForEach(@event => this.PublishEvent(@event.Body));
+            //commit.Events.ForEach(@event => { _bus.FastInvoke(new [] {@event.Body.GetType()}, "Publish", @event.Body); });
+        }
+
+        private void PublishEvent(object @event)
+        {
+            //var foo = typeof (PublishExtensions).GetMethods();
+            var method = typeof(PublishExtensions).GetMethods().First();
+            var generic = method.MakeGenericMethod(@event.GetType());
+
+            generic.Invoke(null, new[] {_bus, @event});
+            //_bus.Publish(@event);
         }
 
         public void Dispose()

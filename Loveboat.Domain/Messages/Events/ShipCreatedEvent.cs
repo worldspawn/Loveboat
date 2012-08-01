@@ -1,30 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using CQRS.Core;
 
 namespace Loveboat.Domain.Messages.Events
 {
     public class ShipCreatedEvent : IEvent
     {
-        private readonly Guid _shipId;
-        private readonly string _currentLocation;
+        public ShipCreatedEvent(){}
 
-        public ShipCreatedEvent(Guid shipId, string currentLocation)
+        public ShipCreatedEvent(Guid shipId, string name, string currentLocation)
         {
-            _shipId = shipId;
-            _currentLocation = currentLocation;
+            ShipId = shipId;
+            Name = name;
+            CurrentLocation = currentLocation;
         }
 
-        public Guid ShipId
-        {
-            get { return _shipId; }
-        }
+        public Guid ShipId { get; set; }
 
-        public string CurrentLocation
-        {
-            get { return _currentLocation; }
-        }
+        public string Name { get; set; }
+
+        public string CurrentLocation { get; set; }
     }
 }

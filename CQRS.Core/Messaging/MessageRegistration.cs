@@ -1,4 +1,6 @@
+using System.Reflection;
 using Autofac;
+using MongoDB.Bson.Serialization;
 
 namespace CQRS.Core.Messaging
 {
@@ -15,6 +17,8 @@ namespace CQRS.Core.Messaging
                                                   var handler = container.Resolve<TMessageHandler>();
                                                   handler.Handle(msg);
                                               });
+
+            BsonClassMap.RegisterClassMap<TMessage>();
         }
     }
 

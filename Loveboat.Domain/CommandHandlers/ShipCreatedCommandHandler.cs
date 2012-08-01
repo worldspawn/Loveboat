@@ -18,8 +18,8 @@ namespace Loveboat.Domain.CommandHandlers
 
         public void Handle(ShipCreatedCommand message)
         {
-            ShipAggregate aggregate = ShipAggregate.Create(message.CurrentLocation);
-            _eventRepository.Save(aggregate);
+            ShipAggregate aggregate = ShipAggregate.Create(message.Name, message.CurrentLocation);
+            _eventRepository.Create(aggregate);
         }
 
         #endregion

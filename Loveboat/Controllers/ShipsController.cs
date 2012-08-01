@@ -4,8 +4,8 @@ using System.Web.Mvc;
 using CQRS.Core;
 using CQRS.Core.ViewModel;
 using Loveboat.Domain.Messages.Commands;
+using Loveboat.Domain.Messages.Events;
 using Loveboat.Domain.ViewModels;
-using Loveboat.ViewModelCache;
 
 namespace Loveboat.Controllers
 {
@@ -25,10 +25,12 @@ namespace Loveboat.Controllers
         [HttpGet]
         public ActionResult Reset()
         {
-            bus.Send(new ShipCreatedCommand("Melbourne"));
-            bus.Send(new ShipCreatedCommand("Sydney"));
+            bus.Send(new ShipCreatedCommand("HMS Boobies", "Melbourne"));
+            /*bus.Send(new ShipCreatedCommand("Sydney"));
             bus.Send(new ShipCreatedCommand("Perth"));
-            bus.Send(new ShipCreatedCommand("Hobart"));
+            bus.Send(new ShipCreatedCommand("Hobart"));*/
+
+            //bus.Send(new ShipCreatedEvent(Guid.NewGuid(), "Ship Name", "Bunyip"));
 
             return RedirectToAction("Index");
         }

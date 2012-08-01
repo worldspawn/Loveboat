@@ -29,15 +29,28 @@ namespace CQRS.Core.Infrastructure
             return aggregate;
         }
 
-        public void Save(T aggregate)
+        public void Update(T aggregate)
+        {
+            using (var stream = _eventStore.OpenStream(aggregate.Id, 0, int.MaxValue))
+            {
+                foreach (var uncommittedEvent in aggregate.UncommittedEvents)
+                {
+                    stream.Add(new EventMessage {Body = uncommittedEvent});
+                    _bus.Send(uncommittedEvent);
+                }
+
+                stream.CommitChanges(Guid.NewGuid());
+            }
+        }
+
+        public void Create(T aggregate)
         {
             using (var stream = _eventStore.CreateStream(aggregate.Id))
             {
-                foreach (var uncommitedEvent in aggregate.UncommitedEvents)
+                foreach (var uncommittedEvent in aggregate.UncommittedEvents)
                 {
-                    stream.Add(new EventMessage {Body = uncommitedEvent});
-
-                    _bus.Send(uncommitedEvent);
+                    stream.Add(new EventMessage {Body = uncommittedEvent});
+                    _bus.Send(uncommittedEvent);
                 }
 
                 stream.CommitChanges(Guid.NewGuid());

@@ -51,7 +51,7 @@
     <Compile Include="Aggregates\Ship\ShipAggregate.cs" />
     <Compile Include="CommandHandlers\ArrivalCommandHandler.cs" />
     <Compile Include="EventHandlers\ArrivalEventHandler.cs" />
-    <Compile Include="EventHandlers\Copy of ArrivalEventHandler.cs" />
+    <Compile Include="EventHandlers\ShipCreatedEventHandler.cs" />
     <Compile Include="EventHandlers\DepartedEventHandler.cs" />
     <Compile Include="Messages\Commands\ArrivalCommand.cs" />
     <Compile Include="Messages\Commands\DepartureCommand.cs" />
@@ -80,7 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\EventStore.license.txt" />
-    <Content Include="ViewModels\LoveBoatViewModelCache.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Infrastructure\" />

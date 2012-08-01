@@ -60,15 +60,13 @@ namespace Loveboat
             IContainer container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
-            var commandHost = new MessageHost(container);
-            commandHost.RegisterMessageHandlers(
+            MessageHost.RegisterMessageHandlers(container,
                 new MessageRegistration<ArrivalCommand, ArrivalCommandHandler>(),
                 new MessageRegistration<DepartureCommand, DepartureCommandHandler>(),
                 new MessageRegistration<ShipCreatedCommand, ShipCreatedCommandHandler>()
                 );
 
-            var eventHost = new MessageHost(container);
-            eventHost.RegisterMessageHandlers(
+            MessageHost.RegisterMessageHandlers(container,
                 new MessageRegistration<ArrivedEvent, ArrivalEventHandler>(),
                 new MessageRegistration<DepartedEvent, DepartedEventHandler>(),
                 new MessageRegistration<ShipCreatedEvent, ShipCreatedEventHandler>()

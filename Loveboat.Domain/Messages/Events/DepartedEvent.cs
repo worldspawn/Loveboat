@@ -5,23 +5,14 @@ namespace Loveboat.Domain.Messages.Events
 {
     public class DepartedEvent : IEvent
     {
-        private readonly Guid _shipId;
-        private readonly string _currentLocation;
-
         public DepartedEvent(Guid shipId, string currentLocation)
         {
-            _shipId = shipId;
-            _currentLocation = currentLocation;
+            ShipId = shipId;
+            CurrentLocation = currentLocation;
         }
 
-        public string CurrentLocation
-        {
-            get { return _currentLocation; }
-        }
+        public string CurrentLocation { get; set; }
 
-        public Guid ShipId
-        {
-            get { return _shipId; }
-        }
+        public Guid ShipId { get; set; }
     }
 }

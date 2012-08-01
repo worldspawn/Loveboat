@@ -16,7 +16,7 @@ namespace Loveboat.Domain.EventHandlers
 
         public void Handle(ArrivedEvent @event)
         {
-            var shipViewModel = _shipViewRepository.ById(@event.Id);
+            var shipViewModel = _shipViewRepository.Single(x=>x.Id == @event.Id);
             
             if (shipViewModel == null) return;
 

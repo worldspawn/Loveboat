@@ -4,36 +4,32 @@ using Autofac;
 
 namespace CQRS.Core.Messaging
 {
-    public class MessageHost
+    public static class MessageHost
     {
-        private readonly IBus _bus;
-        private readonly IContainer _container;
-
-        public MessageHost(IContainer container)
+        public static void RegisterMessageHandlers(IContainer container, params MessageRegistration[] registrations)
         {
             if (container == null) throw new ArgumentNullException("container");
-            _bus = container.Resolve<IBus>();
-            _container = container;
-        }
+            var bus = container.Resolve<IBus>();
 
-        public void RegisterMessageHandlers(params MessageRegistration[] registrations)
-        {
             if (registrations == null || !registrations.Any())
                 return;
 
             var builder = new ContainerBuilder();
             for (int i = 0; i < registrations.Length; i++)
-                registrations[i].Apply(builder, _container, _bus);
-            builder.Update(_container);
+                registrations[i].Apply(builder, container, bus);
+            builder.Update(container);
         }
 
-        public void RegisterMessageHandler<TMessage, TMessageHandler>()
+        public static void RegisterMessageHandler<TMessage, TMessageHandler>(IContainer container)
             where TMessageHandler : IMessageHandler<TMessage>
             where TMessage : class, IMessage
         {
+            if (container == null) throw new ArgumentNullException("container");
+            var bus = container.Resolve<IBus>();
+
             var builder = new ContainerBuilder();
-            new MessageRegistration<TMessage, TMessageHandler>().Apply(builder, _container, _bus);
-            builder.Update(_container);
+            new MessageRegistration<TMessage, TMessageHandler>().Apply(builder, container, bus);
+            builder.Update(container);
         }
     }
 }

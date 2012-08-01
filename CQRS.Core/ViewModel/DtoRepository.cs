@@ -14,15 +14,18 @@ namespace CQRS.Core.ViewModel
 
         public DtoRepository(MongoDatabase mongoDatabase)
         {
-            _collection = mongoDatabase.GetCollection<TDto>(typeof (TDto).Name);
+            var type = typeof (TDto);
+            if (!mongoDatabase.CollectionExists(type.Name))
+                mongoDatabase.CreateCollection(type.Name);
+            _collection = mongoDatabase.GetCollection<TDto>(type.Name, SafeMode.True);
         }
 
         #region IViewModelRepository<TDto> Members
 
-        public virtual TDto ById(Guid id)
+        public virtual TDto Single(Expression<Func<TDto, bool>> criteria)
         {
             return _collection.AsQueryable()
-                .FirstOrDefault(e => e.Id == id);
+                .SingleOrDefault(criteria);
         }
 
         public virtual TDto Insert(TDto entity)

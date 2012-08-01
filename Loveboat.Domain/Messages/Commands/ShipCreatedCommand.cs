@@ -8,16 +8,14 @@ namespace Loveboat.Domain.Messages.Commands
 {
     public class ShipCreatedCommand : ICommand
     {
-        private readonly string _currentLocation;
-
-        public ShipCreatedCommand(string currentLocation)
+        public ShipCreatedCommand(string name, string currentLocation)
         {
-            _currentLocation = currentLocation;
+            Name = name;
+            CurrentLocation = currentLocation;
         }
 
-        public string CurrentLocation
-        {
-            get { return _currentLocation; }
-        }
+        public string Name { get; set; }
+
+        public string CurrentLocation { get; set; }
     }
 }

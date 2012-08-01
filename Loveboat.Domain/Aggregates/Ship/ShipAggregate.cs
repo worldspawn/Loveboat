@@ -9,22 +9,24 @@ namespace Loveboat.Domain.Aggregates.Ship
 {
     public class ShipAggregate : AggregateBase<IEvent>
     {
+        protected string CurrentLocation, Name;
+
         public ShipAggregate()
         {
-            UncommitedEvents = new List<IEvent>();
+            UncommittedEvents = new List<IEvent>();
             MapEvent<DepartedEvent>(OnDeparted);
+            MapEvent<ArrivedEvent>(OnArrived);
+            MapEvent<ShipCreatedEvent>(OnCreated);
         }
 
-        private ShipAggregate(string currentLocation)
+        private ShipAggregate(string name, string currentLocation) : this()
         {
-            ApplyChange(new ShipCreatedEvent(Id, currentLocation));
+            ApplyChange(new ShipCreatedEvent(Guid.NewGuid(), name, currentLocation));
         }
 
-        protected string CurrentLocation;
-
-        public static ShipAggregate Create(string currentLocation)
+        public static ShipAggregate Create(string name, string currentLocation)
         {
-            return new ShipAggregate(currentLocation);
+            return new ShipAggregate(name, currentLocation);
         }
 
         public void Depart()
@@ -35,22 +37,29 @@ namespace Loveboat.Domain.Aggregates.Ship
             ApplyChange(new DepartedEvent(Id, "At Sea"));
         }
 
-        public void HandleCommand(ArrivalCommand command)
+        public void Arrive(string arrivalPort)
         {
             if (CurrentLocation != "At Sea")
                 throw new ApplicationException();
 
-            ApplyChange(new ArrivedEvent(command));
+            ApplyChange(new ArrivedEvent(Id, arrivalPort));
         }
 
-        public void HandleEvent(ArrivedEvent arrivedEvent)
+        public void OnArrived(ArrivedEvent arrivedEvent)
         {
             CurrentLocation = arrivedEvent.ArrivalPort;
         }
 
-        public void OnDeparted(DepartedEvent departedEvent)
+        private void OnDeparted(DepartedEvent departedEvent)
         {
             CurrentLocation = departedEvent.CurrentLocation;
+        }
+
+        private void OnCreated(ShipCreatedEvent createdEvent)
+        {
+            Id = createdEvent.ShipId;
+            Name = createdEvent.Name;
+            CurrentLocation = createdEvent.CurrentLocation;
         }
     }
 }

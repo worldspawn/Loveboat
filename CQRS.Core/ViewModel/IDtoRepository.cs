@@ -8,7 +8,7 @@ namespace CQRS.Core.ViewModel
         where TDto : IPersistedDto
     {
         bool Any(Expression<Func<TDto, bool>> criteria);
-        TDto ById(Guid id);
+        TDto Single(Expression<Func<TDto, bool>> criteria);
         int Count(Expression<Func<TDto, bool>> criteria);
         TDto Delete(TDto entity);
         IEnumerable<TDto> Find();

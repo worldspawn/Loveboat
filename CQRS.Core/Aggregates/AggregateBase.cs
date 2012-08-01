@@ -6,9 +6,13 @@ namespace CQRS.Core.Aggregates
 {
     public class AggregateBase<TEvent>
     {
-        public IList<TEvent> UncommitedEvents;
-        public Guid Id { get; private set; }
+        public IList<TEvent> UncommittedEvents;
+        public Guid Id { get; protected set; }
         private readonly IDictionary<Type, Action<TEvent>> _eventMap = new Dictionary<Type, Action<TEvent>>();
+
+        protected AggregateBase()
+        {
+        }
 
         public void LoadFromEvents(Guid id, IEnumerable<TEvent> eventsForAggreate)
         {
@@ -30,7 +34,7 @@ namespace CQRS.Core.Aggregates
                 throw new UnregisteredDomainEventException(string.Format("The requested domain event '{0}' is not registered in '{1}'", eventType.FullName, GetType().FullName));
 
             handler(@event);
-            if (isNew) UncommitedEvents.Add(@event);
+            if (isNew) UncommittedEvents.Add(@event);
         }
 
         protected void MapEvent<TEventType>(Action<TEventType> eventHandler)
