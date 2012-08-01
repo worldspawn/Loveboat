@@ -7,22 +7,17 @@ namespace CQRS.Core.Configuration
     public class MongoModule : Module
     {
         private readonly string _connectionString;
-        private readonly string _databaseName;
 
-        public MongoModule(string connectionString, string databaseName)
+        public MongoModule(string connectionString)
         {
-            _connectionString = connectionString;
-            _databaseName = databaseName;
+            _connectionString = ConfigurationManager.ConnectionStrings[connectionString].ConnectionString;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register((context) => { return MongoServer.Create(ConfigurationManager.ConnectionStrings[_connectionString].ConnectionString); }).SingleInstance();
-
             builder.Register((context) =>
                                  {
-                                     var mongoServer = context.Resolve<MongoServer>();
-                                     return mongoServer.GetDatabase(ConfigurationManager.AppSettings[_databaseName]);
+                                     return MongoDatabase.Create(_connectionString);
                                  }).SingleInstance();
 
             base.Load(builder);

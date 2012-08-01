@@ -50,7 +50,7 @@ namespace Loveboat
 
             builder.RegisterModule(new MassTransitModule(busEndPoint));
             builder.RegisterModule(new EventStoreModule("loveboat.events"));
-            builder.RegisterModule(new MongoModule("loveboat.dto.string", "loveboat.dto.databaseName"));
+            builder.RegisterModule(new MongoModule("loveboat.dto"));
             builder.RegisterModule(new RepositoryModule(typeof (EventRepository<>),
                                                         typeof (IEventRepository<>)));
             builder.RegisterModule(new RepositoryModule(typeof (DtoRepository<>), typeof (IDtoRepository<>)));
