@@ -21,6 +21,7 @@ namespace Loveboat.Domain.EventHandlers
             if (shipViewModel == null) return;
 
             shipViewModel.Location = @event.ArrivalPort;
+            shipViewModel.PortsVisited++;
             _shipViewRepository.Update(shipViewModel);
         }
     }

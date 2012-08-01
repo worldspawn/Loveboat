@@ -61,6 +61,7 @@ namespace Loveboat
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
             MessageHost.RegisterMessageHandlers(container,
+                new MessageRegistration<ReplayEventStoreCommand, ReplayEventStoreCommandHandler>(),
                 new MessageRegistration<ArrivalCommand, ArrivalCommandHandler>(),
                 new MessageRegistration<DepartureCommand, DepartureCommandHandler>(),
                 new MessageRegistration<ShipCreatedCommand, ShipCreatedCommandHandler>()

@@ -21,6 +21,13 @@ namespace CQRS.Core.Aggregates
                 ApplyChange(@event, false);
         }
 
+        public void ReplayFromEvents(Guid id, IEnumerable<TEvent> eventsForAggreate)
+        {
+            Id = id;
+            foreach (var @event in eventsForAggreate)
+                ApplyChange(@event, true);
+        }
+
         protected void ApplyChange(TEvent @event)
         {
             ApplyChange(@event, true);

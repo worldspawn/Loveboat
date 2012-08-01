@@ -15,10 +15,7 @@ namespace CQRS.Core.Configuration
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register((context) =>
-                                 {
-                                     return MongoDatabase.Create(_connectionString);
-                                 }).SingleInstance();
+            builder.Register((context) => MongoDatabase.Create(_connectionString)).SingleInstance();
 
             base.Load(builder);
         }

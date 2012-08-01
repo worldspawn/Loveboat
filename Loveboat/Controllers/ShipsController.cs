@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using CQRS.Core;
+using CQRS.Core.Infrastructure;
 using CQRS.Core.ViewModel;
 using Loveboat.Domain.Messages.Commands;
 using Loveboat.Domain.Messages.Events;
@@ -31,6 +32,14 @@ namespace Loveboat.Controllers
             bus.Send(new ShipCreatedCommand("Hobart"));*/
 
             //bus.Send(new ShipCreatedEvent(Guid.NewGuid(), "Ship Name", "Bunyip"));
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult Replay()
+        {
+            bus.Send(new ReplayEventStoreCommand());
 
             return RedirectToAction("Index");
         }

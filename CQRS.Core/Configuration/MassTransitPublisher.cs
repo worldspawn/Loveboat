@@ -40,7 +40,7 @@ namespace CQRS.Core.Configuration
             //commit.Events.ForEach(@event => { _bus.FastInvoke(new [] {@event.Body.GetType()}, "Publish", @event.Body); });
         }
 
-        private void PublishEvent(object @event)
+        public void PublishEvent(object @event)
         {
             //var foo = typeof (PublishExtensions).GetMethods();
             var method = typeof(PublishExtensions).GetMethods().First();
