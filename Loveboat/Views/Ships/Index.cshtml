@@ -19,13 +19,25 @@
         var hub = $.connection.viewModelDispatcher;
 
         hub.viewModelChanged = function (name, dto, type, sourceId) {
-            var match = ko.utils.arrayFirst(viewModel.ships(), function(item) {
-              return dto.id == item.id();
-            });
+          try {
+            if (type === 'Insert')
+              viewModel.ships.push(ko.mapping.fromJS(dto));
+            else {
+              var match = ko.utils.arrayFirst(viewModel.ships(), function(item) {
+                return dto.id == item.id();
+              });
 
-            if (match != null) {
-              viewModel.ships.replace(match, ko.mapping.fromJS(dto));
+              if (match != null) {
+                if (type === 'Update')
+                  viewModel.ships.replace(match, ko.mapping.fromJS(dto));
+                if (type === 'Delete')
+                  viewModel.ships.remove(match);
+              }
             }
+          }
+          catch(e){
+            console.log(e);
+          }
         };
       
         $.connection.hub.start().done(function () {
@@ -37,6 +49,7 @@
         function ShipViewModel(ships) {
             this.ships = ko.mapping.fromJS(ships);
             this.submit = function(data, ev) {
+                $(ev.target).css('opacity', '.5');
                 $.post($(ev.target).attr('action'), $(ev.target).serialize()).done(function(data) {
                     commandId = data;
                 });
@@ -55,7 +68,7 @@
         <td><strong>Name</strong></td>
         <td><strong>Location</strong></td>
         <td><strong>Ports Visited</strong></td>
-        <td></td>
+        <td colspan="2"></td>
     </thead>
         <tbody data-bind="foreach : ships">
             <tr>
@@ -73,6 +86,12 @@
                     <form action="/ships/depart" data-bind="event : { submit : $parent.submit }" >
                         <input name="departingshipid" type="hidden" data-bind="value : id" />
                         <input type="submit" value="Depart"/>
+                    </form>
+                </td>
+                <td>
+                    <form action="/ships/explode" data-bind="event : { submit : $parent.submit }" >
+                        <input name="explodingshipid" type="hidden" data-bind="value : id" />
+                        <input type="submit" value="Explode"/>
                     </form>
                 </td>
             </tr>

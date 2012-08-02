@@ -17,6 +17,7 @@ namespace Loveboat.Domain.Aggregates.Ship
             MapEvent<DepartedEvent>(OnDeparted);
             MapEvent<ArrivedEvent>(OnArrived);
             MapEvent<ShipCreatedEvent>(OnCreated);
+            MapEvent<ExplodedEvent>(OnDeleted);
         }
 
         private ShipAggregate(string name, string currentLocation) : this()
@@ -45,6 +46,11 @@ namespace Loveboat.Domain.Aggregates.Ship
             ApplyChange(new ArrivedEvent(Id, arrivalPort));
         }
 
+        public void Explode()
+        {
+            ApplyChange(new ExplodedEvent(Id));
+        }
+
         public void OnArrived(ArrivedEvent arrivedEvent)
         {
             CurrentLocation = arrivedEvent.ArrivalPort;
@@ -60,6 +66,11 @@ namespace Loveboat.Domain.Aggregates.Ship
             Id = createdEvent.ShipId;
             Name = createdEvent.Name;
             CurrentLocation = createdEvent.CurrentLocation;
+        }
+
+        private void OnDeleted(ExplodedEvent explodedEvent)
+        {
+            CurrentLocation = "Under the sea.";
         }
     }
 }

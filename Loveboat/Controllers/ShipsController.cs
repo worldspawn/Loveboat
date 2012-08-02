@@ -75,5 +75,16 @@ namespace Loveboat.Controllers
 
             return command.CommandId;
         }
+
+        [HttpPost]
+        public Guid Explode(ExplodingCommand command)
+        {
+            if (!ModelState.IsValid)
+                return Guid.Empty;
+
+            bus.Send(command);
+
+            return command.CommandId;
+        }
     }
 }

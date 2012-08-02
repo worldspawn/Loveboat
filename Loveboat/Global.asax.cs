@@ -88,13 +88,15 @@ namespace Loveboat
                 new MessageRegistration<ReplayEventStoreCommand, ReplayEventStoreCommandHandler>(),
                 new MessageRegistration<ArrivalCommand, ArrivalCommandHandler>(),
                 new MessageRegistration<DepartureCommand, DepartureCommandHandler>(),
-                new MessageRegistration<ShipCreatedCommand, ShipCreatedCommandHandler>()
+                new MessageRegistration<ShipCreatedCommand, ShipCreatedCommandHandler>(),
+                new MessageRegistration<ExplodingCommand, ExplodedCommandHandler>()
                 );
 
             MessageHost.RegisterMessageHandlers(container,
                 new MessageRegistration<ArrivedEvent, ArrivalEventHandler>(),
                 new MessageRegistration<DepartedEvent, DepartedEventHandler>(),
-                new MessageRegistration<ShipCreatedEvent, ShipCreatedEventHandler>()
+                new MessageRegistration<ShipCreatedEvent, ShipCreatedEventHandler>(),
+                new MessageRegistration<ExplodedEvent, ExplodedEventHandler>()
                 );
 
             MessageHost.RegisterMessageHandlers(container,

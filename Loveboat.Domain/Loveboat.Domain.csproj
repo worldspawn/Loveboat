@@ -43,17 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandlers\ExplodedCommandHandler.cs" />
     <Compile Include="CommandHandlers\ShipCreatedCommandHandler.cs" />
     <Compile Include="CommandHandlers\DepartureCommandHandler.cs" />
     <Compile Include="Aggregates\Ship\ShipAggregate.cs" />
     <Compile Include="CommandHandlers\ArrivalCommandHandler.cs" />
     <Compile Include="EventHandlers\ArrivalEventHandler.cs" />
+    <Compile Include="EventHandlers\ExplodedEventHandler.cs" />
     <Compile Include="EventHandlers\ShipCreatedEventHandler.cs" />
     <Compile Include="EventHandlers\DepartedEventHandler.cs" />
     <Compile Include="Messages\Commands\ArrivalCommand.cs" />
+    <Compile Include="Messages\Commands\ExplodingCommand.cs" />
     <Compile Include="Messages\Commands\DepartureCommand.cs" />
     <Compile Include="Messages\Commands\ShipCreatedCommand.cs" />
     <Compile Include="Messages\Events\ArrivedEvent.cs" />
+    <Compile Include="Messages\Events\ExplodedEvent.cs" />
     <Compile Include="Messages\Events\DepartedEvent.cs" />
     <Compile Include="Messages\Events\ShipCreatedEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
