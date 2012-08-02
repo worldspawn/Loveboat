@@ -7,15 +7,16 @@ namespace Loveboat.Domain.EventHandlers
 {
     public class DepartedEventHandler : IEventHandler<DepartedEvent>
     {
-        private readonly IDtoRepository<ShipViewModel> _shipViewRepository;
+        private readonly IContextDtoRepositoryWrapper<ShipViewModel> _shipViewRepository;
 
-        public DepartedEventHandler(IDtoRepository<ShipViewModel> shipViewRepository)
+        public DepartedEventHandler(IDtoRepository<ShipViewModel> shipViewRepository, IBus bus)
         {
-            _shipViewRepository = shipViewRepository;
+            _shipViewRepository = new ContextDtoRepositoryWrapper<ShipViewModel>(shipViewRepository, bus);
         }
 
         public void Handle(DepartedEvent @event)
         {
+            _shipViewRepository.SourceId = @event.SourceId;
             var shipViewModel = _shipViewRepository.Single(x => x.Id == @event.ShipId);
             
             if (shipViewModel == null) return;

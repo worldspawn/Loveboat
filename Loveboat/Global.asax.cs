@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
 using Autofac.Integration.Mvc;
+using CQRS.Core;
 using CQRS.Core.Configuration;
 using CQRS.Core.Infrastructure;
 using CQRS.Core.Messaging;
@@ -13,6 +14,7 @@ using Loveboat.Domain.CommandHandlers;
 using Loveboat.Domain.EventHandlers;
 using Loveboat.Domain.Messages.Commands;
 using Loveboat.Domain.Messages.Events;
+using Loveboat.Domain.ViewModels;
 using Loveboat.Hubs;
 using SignalR;
 
@@ -32,7 +34,7 @@ namespace Loveboat
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            routes.MapHubs("~/hubs");
+            routes.MapHubs("~/signalr");
 
             routes.MapRoute(
                 "Default", // Route name
@@ -59,12 +61,16 @@ namespace Loveboat
                                                         typeof (IEventRepository<>)));
             builder.RegisterModule(new RepositoryModule(typeof (DtoRepository<>), typeof (IDtoRepository<>)));
 
+            builder.RegisterType<ViewModelEventDispatcher>().As<IViewModelEventDispatcher>();
+
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
+
+            builder.Register(context => { return GlobalHost.DependencyResolver.Resolve<IConnectionManager>(); }).As<IConnectionManager>();
 
             IContainer container = builder.Build();
 
-            container.Resolve<IConnectionManager>().GetHubContext<ViewModelHub>().Clients.
-
+            GlobalHost.DependencyResolver = new Configuration.AutofacDependencyResolver(container);
+            
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
             //need to make this registration stuff dynamic
@@ -79,6 +85,12 @@ namespace Loveboat
                 new MessageRegistration<ArrivedEvent, ArrivalEventHandler>(),
                 new MessageRegistration<DepartedEvent, DepartedEventHandler>(),
                 new MessageRegistration<ShipCreatedEvent, ShipCreatedEventHandler>()
+                );
+
+            MessageHost.RegisterMessageHandlers(container,
+                                                new MessageRegistration
+                                                    <ViewModelUpdatedEvent<ShipViewModel>,
+                                                    ViewModelUpdatedEventHandler<ShipViewModel>>()
                 );
 
             //register an update handler for each view model type... preferably dynamically

@@ -1,45 +1,87 @@
-﻿@model Loveboat.Domain.ViewModels.ShipsViewModel
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Serialization
+@model Loveboat.Domain.ViewModels.ShipsViewModel
 
 @{
     ViewBag.Title = "title";
 }
 
-<table>
+<script src="/Scripts/jquery-1.6.4.min.js" type="text/javascript"></script>
+<script src="/Scripts/jquery.signalR-0.5.2.min.js" type="text/javascript"></script>
+<script src="/signalr/hubs" type="text/javascript"></script>
+<script src="/Scripts/knockout-2.1.0.js"></script>
+<script src="/Scripts/knockout.mapping-latest.js"></script>
+
+<script type="text/javascript">
+    var commandId;
+
+    $(function () {
+        var hub = $.connection.viewModelDispatcher;
+
+        hub.viewModelChanged = function (name, dto, type, sourceId) {
+            console.log('viewModelChanged', arguments, commandId, sourceId == commandId);
+
+            var match = ko.utils.arrayFirst(viewModel.ships(), function(item) {
+                console.log(dto.id, item.id())
+                return dto.id == item.id();
+            });
+            console.log(match);
+            
+            if (match) {
+                viewModel.ships.replaceOf(match, ko.mapping.fromJs(dto));
+            }
+        };
+
+        $.connection.hub.start().done(function () {
+            hub.join(['ShipViewModel']);
+            console.log('started');
+        });
+
+        var rawShipData = @Html.Raw(JsonConvert.SerializeObject(Model.Ships, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+
+        function ShipViewModel(ships) {
+            this.ships = ko.mapping.fromJS(ships);
+            this.submit = function(data, ev) {
+                $.post($(ev.target).attr('action'), $(ev.target).serialize()).done(function(data) {
+                    commandId = data;
+                });
+
+                return false;
+            };
+        };
+
+        var viewModel = new ShipViewModel(rawShipData);
+
+        ko.applyBindings(viewModel);
+    });
+</script>
+    <table>
     <thead>
         <td><strong>Name</strong></td>
         <td><strong>Location</strong></td>
         <td><strong>Ports Visited</strong></td>
         <td></td>
     </thead>
-    <tbody>
-        @foreach(var ship in Model.Ships)
-        {
+        <tbody data-bind="foreach : ships">
             <tr>
-                <td>@ship.Name</td> 
-                <td>@ship.Location</td>
-                <td>@ship.PortsVisited</td>
-                <td>
-                @if(ship.Location == "At Sea")
-                {
-                    using (Html.BeginForm("Arrive", "Ships"))
-                    {
-                        @Html.Hidden("ArrivingShipId", ship.Id)
+                <td data-bind="html : name"></td> 
+                <td data-bind="html : location"></td> 
+                <td data-bind="html : portsVisited"></td> 
+                <td data-bind="visible : location() == 'At Sea'">
+                    <form action="/ships/arrive" data-bind="event : { submit : $parent.submit }">
+                        <input name="arrivingshipid" type="hidden" data-bind="value : id" />
                         <input type="submit" value="Arrive At"/>
-                        @Html.TextBox("ArrivalPort")
-                    }
-                }
-                else
-                {
-                    using (Html.BeginForm("Depart", "Ships"))
-                    {
-                        @Html.Hidden("DepartingShipId", ship.Id)
+                        <input name="arrivalport" type="text" />
+                    </form>
+                </td>
+                <td data-bind="visible : location() != 'At Sea'">
+                    <form action="/ships/depart" data-bind="event : { submit : $parent.submit }" >
+                        <input name="departingshipid" type="hidden" data-bind="value : id" />
                         <input type="submit" value="Depart"/>
-                    }
-                }
-                    </td>
+                    </form>
+                </td>
             </tr>
-        }   
-    </tbody>
+        </tbody>
 </table>
 
 

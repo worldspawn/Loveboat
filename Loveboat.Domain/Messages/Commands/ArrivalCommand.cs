@@ -7,6 +7,11 @@ namespace Loveboat.Domain.Messages.Commands
 {
     public class ArrivalCommand : ShipsViewModel, ICommand
     {
+        public ArrivalCommand()
+        {
+            CommandId = Guid.NewGuid();
+        }
+
         [Required]
         public Guid ArrivingShipId { get; set; }
 

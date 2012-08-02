@@ -7,6 +7,8 @@ using CQRS.Core.ViewModel;
 using Loveboat.Domain.Messages.Commands;
 using Loveboat.Domain.Messages.Events;
 using Loveboat.Domain.ViewModels;
+using Loveboat.Hubs;
+using SignalR;
 
 namespace Loveboat.Controllers
 {
@@ -53,29 +55,25 @@ namespace Loveboat.Controllers
         }
 
         [HttpPost]
-        public ActionResult Arrive(ArrivalCommand command)
+        public Guid Arrive(ArrivalCommand command)
         {
             if (!ModelState.IsValid)
-                return Index();
+                return Guid.Empty;
 
             bus.Send(command);
 
-            TempData["Fake"] = new ShipViewModel() {Id = command.ArrivingShipId, Location = command.ArrivalPort};
-
-            return RedirectToAction("Index");
+            return command.CommandId;
         }
 
         [HttpPost]
-        public ActionResult Depart(DepartureCommand command)
+        public Guid Depart(DepartureCommand command)
         {
             if (!ModelState.IsValid)
-                return Index();
+                return Guid.Empty;
 
             bus.Send(command);
 
-            TempData["Fake"] = new ShipViewModel() { Id = command.DepartingShipId, Location = "At Sea" };
-
-            return RedirectToAction("Index");
+            return command.CommandId;
         }
     }
 }
