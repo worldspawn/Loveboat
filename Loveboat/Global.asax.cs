@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
@@ -10,13 +11,17 @@ using CQRS.Core.Configuration;
 using CQRS.Core.Infrastructure;
 using CQRS.Core.Messaging;
 using CQRS.Core.ViewModel;
+using Loveboat.Configuration;
 using Loveboat.Domain.CommandHandlers;
 using Loveboat.Domain.EventHandlers;
 using Loveboat.Domain.Messages.Commands;
 using Loveboat.Domain.Messages.Events;
 using Loveboat.Domain.ViewModels;
 using Loveboat.Hubs;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SignalR;
+using AutofacDependencyResolver = Autofac.Integration.Mvc.AutofacDependencyResolver;
 
 namespace Loveboat
 {
@@ -67,9 +72,14 @@ namespace Loveboat
 
             builder.Register(context => { return GlobalHost.DependencyResolver.Resolve<IConnectionManager>(); }).As<IConnectionManager>();
 
+            var settings = new JsonSerializerSettings();
+            settings.ContractResolver = new SignalRContractResolver();
+            var serializer = new JsonNetSerializer(settings);
+            GlobalHost.DependencyResolver.Register(typeof (IJsonSerializer), () => serializer);
+
             IContainer container = builder.Build();
 
-            GlobalHost.DependencyResolver = new Configuration.AutofacDependencyResolver(container);
+            //GlobalHost.DependencyResolver = new Configuration.AutofacDependencyResolver(container);
             
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 

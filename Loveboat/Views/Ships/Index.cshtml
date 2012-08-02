@@ -19,22 +19,17 @@
         var hub = $.connection.viewModelDispatcher;
 
         hub.viewModelChanged = function (name, dto, type, sourceId) {
-            console.log('viewModelChanged', arguments, commandId, sourceId == commandId);
-
             var match = ko.utils.arrayFirst(viewModel.ships(), function(item) {
-                console.log(dto.id, item.id())
-                return dto.id == item.id();
+              return dto.id == item.id();
             });
-            console.log(match);
-            
-            if (match) {
-                viewModel.ships.replaceOf(match, ko.mapping.fromJs(dto));
+
+            if (match != null) {
+              viewModel.ships.replace(match, ko.mapping.fromJS(dto));
             }
         };
-
+      
         $.connection.hub.start().done(function () {
             hub.join(['ShipViewModel']);
-            console.log('started');
         });
 
         var rawShipData = @Html.Raw(JsonConvert.SerializeObject(Model.Ships, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
