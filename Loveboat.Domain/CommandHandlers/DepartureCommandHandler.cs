@@ -20,7 +20,7 @@ namespace Loveboat.Domain.CommandHandlers
         {
             ShipAggregate aggregate = _eventRepository.GetById(message.DepartingShipId);
             aggregate.Depart();
-            _eventRepository.Update(aggregate);
+            _eventRepository.Update(aggregate, message.CommandId);
         }
 
         #endregion

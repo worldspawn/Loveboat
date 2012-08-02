@@ -6,7 +6,7 @@ using CQRS.Core;
 
 namespace Loveboat.Domain.Messages.Commands
 {
-    public class ShipCreatedCommand : ICommand
+    public class ShipCreatedCommand : Command
     {
         public ShipCreatedCommand(string name, string currentLocation)
         {
@@ -15,7 +15,6 @@ namespace Loveboat.Domain.Messages.Commands
         }
 
         public string Name { get; set; }
-
         public string CurrentLocation { get; set; }
     }
 }

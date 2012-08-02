@@ -1,6 +1,6 @@
 ﻿namespace CQRS.Core.Infrastructure
 {
-    public class ReplayEventStoreCommand : ICommand
+    public class ReplayEventStoreCommand : Command
     {
 
     }

@@ -22,7 +22,7 @@ namespace Loveboat.Domain.CommandHandlers
 
             aggregate.Arrive(message.ArrivalPort);
 
-            _eventRepository.Update(aggregate);
+            _eventRepository.Update(aggregate, message.CommandId);
         }
 
         #endregion

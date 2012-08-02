@@ -27,12 +27,7 @@ namespace Loveboat.Controllers
         public ActionResult Reset()
         {
             bus.Send(new ShipCreatedCommand("HMS Boobies", "Melbourne"));
-            /*bus.Send(new ShipCreatedCommand("Sydney"));
-            bus.Send(new ShipCreatedCommand("Perth"));
-            bus.Send(new ShipCreatedCommand("Hobart"));*/
-
-            //bus.Send(new ShipCreatedEvent(Guid.NewGuid(), "Ship Name", "Bunyip"));
-
+            
             return RedirectToAction("Index");
         }
 

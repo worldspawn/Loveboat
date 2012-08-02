@@ -8,7 +8,89 @@ using MongoDB.Driver.Builders;
 
 namespace CQRS.Core.ViewModel
 {
-    public class DtoRepository<TDto> : IDtoRepository<TDto> where TDto : IPersistedDto
+    public interface IContextDtoRepositoryWrapper<TDto> : IDtoRepository<TDto>
+        where TDto : IPersistedDto
+    {
+        Guid SourceId { get; set; }
+    }
+
+    public class ContextDtoRepositoryWrapper<TDto> : IContextDtoRepositoryWrapper<TDto>
+        where TDto : IPersistedDto
+    {
+        private readonly IDtoRepository<TDto> _dtoRepository;
+        private readonly IBus _bus;
+
+        public ContextDtoRepositoryWrapper(IDtoRepository<TDto> dtoRepository, IBus bus)
+        {
+            _dtoRepository = dtoRepository;
+            _bus = bus;
+        }
+
+        public Guid SourceId { get; set; }
+
+        public bool Any(Expression<Func<TDto, bool>> criteria)
+        {
+            return _dtoRepository.Any(criteria);
+        }
+
+        public TDto Single(Expression<Func<TDto, bool>> criteria)
+        {
+            return _dtoRepository.Single(criteria);
+        }
+
+        public int Count(Expression<Func<TDto, bool>> criteria)
+        {
+            return _dtoRepository.Count(criteria);
+        }
+
+        public TDto Delete(TDto entity)
+        {
+            var result = _dtoRepository.Delete(entity);
+            _bus.Send(
+                   new ViewModelUpdatedEvent<TDto> { Dto = result, UpdateType = ViewModelUpdateType.Delete, SourceId = SourceId}
+                   );
+
+            return result;
+        }
+
+        public IEnumerable<TDto> Find()
+        {
+            return _dtoRepository.Find();
+        }
+
+        public IEnumerable<TDto> Find(Expression<Func<TDto, bool>> criteria)
+        {
+            return _dtoRepository.Find(criteria);
+        }
+
+        public IEnumerable<TDto> Find(Expression<Func<TDto, bool>> criteria, Expression<Func<TDto, object>> orderBy, int skip = 0, int? take = new int?())
+        {
+            return _dtoRepository.Find(criteria, orderBy, skip, take);
+        }
+
+        public TDto Insert(TDto entity)
+        {
+            var result = _dtoRepository.Insert(entity);
+            _bus.Send(
+                   new ViewModelUpdatedEvent<TDto> { Dto = result, UpdateType = ViewModelUpdateType.Insert, SourceId = SourceId }
+                   );
+
+            return result;
+        }
+
+        public TDto Update(TDto entityToUpdate)
+        {
+            var result = _dtoRepository.Update(entityToUpdate);
+            _bus.Send(
+                   new ViewModelUpdatedEvent<TDto> { Dto = result, UpdateType = ViewModelUpdateType.Update, SourceId = SourceId }
+                   );
+
+            return result;
+        }
+    }
+
+    public class DtoRepository<TDto> : IDtoRepository<TDto> 
+        where TDto : IPersistedDto
     {
         private readonly MongoCollection<TDto> _collection;
 
@@ -34,6 +116,7 @@ namespace CQRS.Core.ViewModel
                 entity.Id = Guid.NewGuid();
 
             _collection.Insert(entity);
+
             return entity;
         }
 

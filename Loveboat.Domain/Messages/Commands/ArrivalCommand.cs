@@ -13,5 +13,6 @@ namespace Loveboat.Domain.Messages.Commands
         [Required]
         public string ArrivalPort { get; set; }
 
+        public Guid CommandId { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using Loveboat.Domain.Messages.Commands;
 
 namespace Loveboat.Domain.Messages.Events
 {
-    public class ArrivedEvent : IEvent
+    public class ArrivedEvent : Event
     {
         public string ArrivalPort { get; set; }
         public Guid Id { get; set; }
@@ -15,10 +15,10 @@ namespace Loveboat.Domain.Messages.Events
             ArrivalPort = arrivalCommand.ArrivalPort;
         }
 
-        public ArrivedEvent(Guid arrivalCommand, string arrivalPort)
+        public ArrivedEvent(Guid shipId, string arrivalPort)
         {
             if (arrivalPort == null) throw new ArgumentNullException("arrivalPort");
-            Id = arrivalCommand;
+            Id = shipId;
             ArrivalPort = arrivalPort;
         }
     }

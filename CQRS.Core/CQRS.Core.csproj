@@ -95,6 +95,7 @@
     <Compile Include="Configuration\MassTransitPublisher.cs" />
     <Compile Include="Infrastructure\ReplayEventStoreCommand.cs" />
     <Compile Include="Infrastructure\ReplayEventStoreCommandHandler.cs" />
+    <Compile Include="IViewModelUpdated.cs" />
     <Compile Include="Messaging\MessageHost.cs" />
     <Compile Include="Configuration\MongoModule.cs" />
     <Compile Include="IBus.cs" />

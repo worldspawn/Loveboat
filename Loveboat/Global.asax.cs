@@ -13,6 +13,8 @@ using Loveboat.Domain.CommandHandlers;
 using Loveboat.Domain.EventHandlers;
 using Loveboat.Domain.Messages.Commands;
 using Loveboat.Domain.Messages.Events;
+using Loveboat.Hubs;
+using SignalR;
 
 namespace Loveboat
 {
@@ -29,6 +31,8 @@ namespace Loveboat
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            routes.MapHubs("~/hubs");
 
             routes.MapRoute(
                 "Default", // Route name
@@ -58,8 +62,12 @@ namespace Loveboat
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
 
             IContainer container = builder.Build();
+
+            container.Resolve<IConnectionManager>().GetHubContext<ViewModelHub>().Clients.
+
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
+            //need to make this registration stuff dynamic
             MessageHost.RegisterMessageHandlers(container,
                 new MessageRegistration<ReplayEventStoreCommand, ReplayEventStoreCommandHandler>(),
                 new MessageRegistration<ArrivalCommand, ArrivalCommandHandler>(),
@@ -72,6 +80,8 @@ namespace Loveboat
                 new MessageRegistration<DepartedEvent, DepartedEventHandler>(),
                 new MessageRegistration<ShipCreatedEvent, ShipCreatedEventHandler>()
                 );
+
+            //register an update handler for each view model type... preferably dynamically
         }
     }
 }

@@ -3,7 +3,7 @@ using CQRS.Core;
 
 namespace Loveboat.Domain.Messages.Events
 {
-    public class ShipCreatedEvent : IEvent
+    public class ShipCreatedEvent : Event
     {
         public ShipCreatedEvent(){}
 

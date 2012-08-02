@@ -9,6 +9,7 @@ namespace CQRS.Core.Aggregates
         public IList<TEvent> UncommittedEvents;
         public Guid Id { get; protected set; }
         private readonly IDictionary<Type, Action<TEvent>> _eventMap = new Dictionary<Type, Action<TEvent>>();
+        public event Action<TEvent> BeforeEventApplied;
 
         protected AggregateBase()
         {
@@ -40,6 +41,8 @@ namespace CQRS.Core.Aggregates
             if (!_eventMap.TryGetValue(eventType, out handler))
                 throw new UnregisteredDomainEventException(string.Format("The requested domain event '{0}' is not registered in '{1}'", eventType.FullName, GetType().FullName));
 
+            if (BeforeEventApplied != null)
+                BeforeEventApplied(@event);
             handler(@event);
             if (isNew) UncommittedEvents.Add(@event);
         }

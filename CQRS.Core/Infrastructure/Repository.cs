@@ -29,12 +29,13 @@ namespace CQRS.Core.Infrastructure
             return aggregate;
         }
 
-        public void Update(T aggregate)
+        public void Update(T aggregate, Guid commandId)
         {
             using (var stream = _eventStore.OpenStream(aggregate.Id, 0, int.MaxValue))
             {
                 foreach (var uncommittedEvent in aggregate.UncommittedEvents)
                 {
+                    uncommittedEvent.SourceId = commandId;
                     stream.Add(new EventMessage {Body = uncommittedEvent});
                     _bus.Send(uncommittedEvent);
                 }
@@ -43,12 +44,13 @@ namespace CQRS.Core.Infrastructure
             }
         }
 
-        public void Create(T aggregate)
+        public void Create(T aggregate, Guid commandId)
         {
             using (var stream = _eventStore.CreateStream(aggregate.Id))
             {
                 foreach (var uncommittedEvent in aggregate.UncommittedEvents)
                 {
+                    uncommittedEvent.SourceId = commandId;
                     stream.Add(new EventMessage {Body = uncommittedEvent});
                     _bus.Send(uncommittedEvent);
                 }
