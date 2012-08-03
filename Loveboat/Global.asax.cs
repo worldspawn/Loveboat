@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
 using System.Web;
@@ -86,27 +87,36 @@ namespace Loveboat
             
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
-            //need to make this registration stuff dynamic
-            MessageHost.RegisterMessageHandlers(container,
-                new MessageRegistration<ReplayEventStoreCommand, ReplayEventStoreCommandHandler>(),
-                new MessageRegistration<ArrivalCommand, ArrivalCommandHandler>(),
-                new MessageRegistration<DepartureCommand, DepartureCommandHandler>(),
-                new MessageRegistration<ShipCreatedCommand, ShipCreatedCommandHandler>(),
-                new MessageRegistration<ExplodingCommand, ExplodedCommandHandler>()
-                );
+            try
+            {
+                //need to make this registration stuff dynamic
+                MessageHost.RegisterMessageHandlers(container,
+                                                    new MessageRegistration
+                                                        <ReplayEventStoreCommand, ReplayEventStoreCommandHandler>(),
+                                                    new MessageRegistration<ArrivalCommand, ArrivalCommandHandler>(),
+                                                    new MessageRegistration<DepartureCommand, DepartureCommandHandler>(),
+                                                    new MessageRegistration
+                                                        <ShipCreatedCommand, ShipCreatedCommandHandler>(),
+                                                    new MessageRegistration<ExplodingCommand, ExplodedCommandHandler>()
+                    );
 
-            MessageHost.RegisterMessageHandlers(container,
-                new MessageRegistration<ArrivedEvent, ArrivalEventHandler>(),
-                new MessageRegistration<DepartedEvent, DepartedEventHandler>(),
-                new MessageRegistration<ShipCreatedEvent, ShipCreatedEventHandler>(),
-                new MessageRegistration<ExplodedEvent, ExplodedEventHandler>()
-                );
+                MessageHost.RegisterMessageHandlers(container,
+                                                    new MessageRegistration<ArrivedEvent, ArrivalEventHandler>(),
+                                                    new MessageRegistration<DepartedEvent, DepartedEventHandler>(),
+                                                    new MessageRegistration<ShipCreatedEvent, ShipCreatedEventHandler>(),
+                                                    new MessageRegistration<ExplodedEvent, ExplodedEventHandler>()
+                    );
 
-            MessageHost.RegisterMessageHandlers(container,
-                                                new MessageRegistration
-                                                    <ViewModelUpdatedEvent<ShipViewModel>,
-                                                    ViewModelUpdatedEventHandler<ShipViewModel>>()
-                );
+                MessageHost.RegisterMessageHandlers(container,
+                                                    new MessageRegistration
+                                                        <ViewModelUpdatedEvent<ShipViewModel>,
+                                                        ViewModelUpdatedEventHandler<ShipViewModel>>()
+                    );
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(busEndPoint, ex);
+            }
 
             //register an update handler for each view model type... preferably dynamically
         }
