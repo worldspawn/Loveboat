@@ -59,7 +59,7 @@ namespace Loveboat
 
             string busEndPoint = ConfigurationManager.AppSettings["BusEndPointUri"];
 
-            builder.RegisterModule(new MassTransitModule(busEndPoint));
+            builder.RegisterModule(new EasyNetQModule(busEndPoint));
             builder.RegisterModule(new EventStoreModule("loveboat.events"));
             builder.RegisterModule(new MongoModule("loveboat.dto"));
             builder.RegisterModule(new RepositoryModule(typeof (EventRepository<>),
