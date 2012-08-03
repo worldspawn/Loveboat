@@ -2,6 +2,9 @@
 using Autofac;
 using EventStore;
 using EventStore.Dispatcher;
+using EventStore.Logging;
+using EventStore.Persistence;
+using EventStore.Persistence.MongoPersistence;
 using EventStore.Serialization;
 
 namespace CQRS.Core.Configuration
@@ -31,9 +34,9 @@ namespace CQRS.Core.Configuration
         {
             builder.Register(context =>
                                  {
-                                     return Wireup.Init()
-                                         .LogToOutputWindow()
-                                         .UsingMongoPersistence(_connectionName, new DocumentObjectSerializer())
+                                     var wireup = Wireup.Init();
+                                     
+                                     return new AdjustedMongoPersistenceWireup(wireup, _connectionName, new DocumentObjectSerializer())
                                          .InitializeStorageEngine()
                                          .UsingJsonSerialization()
                                          .Compress()
@@ -46,4 +49,38 @@ namespace CQRS.Core.Configuration
             base.Load(builder);
         }
     }
+
+
+    public class AdjustedMongoPersistenceFactory : MongoPersistenceFactory
+    {
+        private readonly string _connectionName;
+
+        public AdjustedMongoPersistenceFactory(string connectionName, IDocumentSerializer serializer) : base(connectionName, serializer)
+        {
+            _connectionName = connectionName;
+        }
+
+        protected override string  GetConnectionString()
+        {
+            return _connectionName;
+        }
+    }
+
+    public class AdjustedMongoPersistenceWireup : PersistenceWireup
+    {
+        private static readonly ILog Logger = LogFactory.BuildLogger(typeof(MongoPersistenceWireup));
+
+        static AdjustedMongoPersistenceWireup()
+        {
+        }
+
+        public AdjustedMongoPersistenceWireup(Wireup inner, string connectionName, IDocumentSerializer serializer)
+            : base(inner)
+        {
+            AdjustedMongoPersistenceWireup.Logger.Debug("Configuring Mongo persistence engine.", new object[0]);
+            this.Container.Register(c => new AdjustedMongoPersistenceFactory(connectionName, serializer).Build());
+        }
+    }
+
+    
 }

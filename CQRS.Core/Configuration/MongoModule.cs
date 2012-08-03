@@ -10,7 +10,7 @@ namespace CQRS.Core.Configuration
 
         public MongoModule(string connectionString)
         {
-            _connectionString = ConfigurationManager.ConnectionStrings[connectionString].ConnectionString;
+            _connectionString = connectionString;
         }
 
         protected override void Load(ContainerBuilder builder)
