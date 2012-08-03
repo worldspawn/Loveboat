@@ -57,11 +57,14 @@ namespace Loveboat
 
             var builder = new ContainerBuilder();
 
-            string busEndPoint = ConfigurationManager.AppSettings["BusEndPointUri"];
+            string busEndPointSetting = ConfigurationManager.AppSettings["setting_name_BusEndPointUri"];
+            string dbSetting = ConfigurationManager.AppSettings["setting_name_loveboat.db"];
+            string busEndPoint = ConfigurationManager.AppSettings[busEndPointSetting];
+            string db = ConfigurationManager.AppSettings[dbSetting];
 
             builder.RegisterModule(new MassTransitModule(busEndPoint));
-            builder.RegisterModule(new EventStoreModule("loveboat.events"));
-            builder.RegisterModule(new MongoModule("loveboat.dto"));
+            builder.RegisterModule(new EventStoreModule(db));
+            builder.RegisterModule(new MongoModule(db));
             builder.RegisterModule(new RepositoryModule(typeof (EventRepository<>),
                                                         typeof (IEventRepository<>)));
             builder.RegisterModule(new RepositoryModule(typeof (DtoRepository<>), typeof (IDtoRepository<>)));
