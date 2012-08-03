@@ -104,7 +104,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Hubs\ViewModelEventDispatcher.cs" />
-    <Compile Include="Hubs\VideoModelDispatcher.cs" />
+    <Compile Include="Hubs\ViewModelDispatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

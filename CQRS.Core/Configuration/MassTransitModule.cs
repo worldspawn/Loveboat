@@ -15,14 +15,14 @@ namespace CQRS.Core.Configuration
 
         protected override void Load(ContainerBuilder builder)
         {
-            var endPoint = _endPoint.Replace("amqp://", "rabbitmq://");
+            var endPoint = string.Format("{0}/server", _endPoint.Replace("amqp://", "rabbitmq://"));
             builder.Register(context =>
                                  {
                                      return ServiceBusFactory.New(x =>
                                                                       {
-                                                                          x.ReceiveFrom(endPoint);
                                                                           x.UseRabbitMq();
                                                                           x.UseRabbitMqRouting();
+                                                                          x.ReceiveFrom(endPoint);
                                                                           x.Subscribe(
                                                                               c =>
                                                                               c.LoadFrom(
