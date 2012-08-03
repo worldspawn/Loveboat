@@ -15,7 +15,7 @@ namespace CQRS.Core.Configuration
 
         protected override void Load(ContainerBuilder builder)
         {
-            var endPoint = string.Format("{0}/server", _endPoint.Replace("amqp://", "rabbitmq://"));
+            var endPoint = string.Format("{0}", _endPoint.Replace("amqp://", "rabbitmq://"));
             builder.Register(context =>
                                  {
                                      return ServiceBusFactory.New(x =>
