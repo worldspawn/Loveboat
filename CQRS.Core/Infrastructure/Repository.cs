@@ -37,7 +37,6 @@ namespace CQRS.Core.Infrastructure
                 {
                     uncommittedEvent.SourceId = commandId;
                     stream.Add(new EventMessage {Body = uncommittedEvent});
-                    _bus.Send(uncommittedEvent);
                 }
 
                 stream.CommitChanges(Guid.NewGuid());
@@ -52,7 +51,6 @@ namespace CQRS.Core.Infrastructure
                 {
                     uncommittedEvent.SourceId = commandId;
                     stream.Add(new EventMessage {Body = uncommittedEvent});
-                    _bus.Send(uncommittedEvent);
                 }
 
                 stream.CommitChanges(Guid.NewGuid());
