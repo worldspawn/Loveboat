@@ -10,7 +10,7 @@ namespace CQRS.Core.ViewModel
         
     }
 
-    public interface IPersistedDto : IDto
+    public interface IPersistedDto : IDto, IPersistable
     {
         Guid Id { get; set; }
     }

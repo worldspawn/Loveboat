@@ -1,11 +1,28 @@
 using System;
+using System.Collections.Generic;
 using EasyNetQ;
 using EventStore;
 using EventStore.Dispatcher;
 using Magnum.Reflection;
+using EasyNetQ;
 
 namespace CQRS.Core.Configuration
 {
+    public class DispatchResponse
+    {
+        public DispatchResponse()
+        {
+            Exceptions = new List<Exception>();
+        }
+
+        public bool Success
+        {
+            get { return Exceptions.Count == 0; }
+        }
+
+        private List<Exception> Exceptions { get; set; }
+    }
+
     public class EasyNetBus : IBus, IDispatchCommits
     {
         private readonly EasyNetQ.IBus _bus;

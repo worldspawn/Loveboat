@@ -33,6 +33,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommonDomain">
+      <HintPath>..\packages\CommonDomain.1.4.0\lib\net40\CommonDomain.dll</HintPath>
+    </Reference>
+    <Reference Include="EventStore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=7735eb81c0bd9948, processorArchitecture=MSIL">
+      <HintPath>..\packages\EventStore.3.0.11326.44\lib\net40\EventStore.dll</HintPath>
+    </Reference>
+    <Reference Include="Magnum, Version=2.0.0.4, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -43,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aggregates\Ship\ShipAggregate2.cs" />
     <Compile Include="CommandHandlers\ExplodedCommandHandler.cs" />
     <Compile Include="CommandHandlers\ShipCreatedCommandHandler.cs" />
     <Compile Include="CommandHandlers\DepartureCommandHandler.cs" />
@@ -75,11 +83,15 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="App_Readme\EventStore - Architectural Overview.docx" />
+    <None Include="App_Readme\EventStore - Transactional Integrity.docx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="App_Readme\EventStore.license.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

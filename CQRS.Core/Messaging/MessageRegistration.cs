@@ -1,5 +1,6 @@
 using System.Reflection;
 using Autofac;
+using CQRS.Core.ViewModel;
 using MongoDB.Bson.Serialization;
 
 namespace CQRS.Core.Messaging
@@ -25,5 +26,20 @@ namespace CQRS.Core.Messaging
     public abstract class MessageRegistration
     {
         public abstract void Apply(ContainerBuilder builder, IContainer container, IBus bus);
+    }
+
+    public class MessageManager
+    {
+        private readonly IRepository<Message> _messageRepository;
+        private readonly IRepository<Sequence> _sequenceRepository;
+
+        public MessageManager(IRepository<Message> messageRepository,
+            IRepository<Sequence> sequenceRepository)
+        {
+            _messageRepository = messageRepository;
+            _sequenceRepository = sequenceRepository;
+        }
+
+        public 
     }
 }

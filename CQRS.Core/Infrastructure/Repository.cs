@@ -8,14 +8,11 @@ namespace CQRS.Core.Infrastructure
 {
     public class EventRepository<T> : IEventRepository<T> where T : AggregateBase<IEvent>, new()
     {
-        private readonly IBus _bus;
         private readonly IStoreEvents _eventStore;
 
-        public EventRepository(IBus bus, IStoreEvents eventStore)
+        public EventRepository(IStoreEvents eventStore)
         {
-            if (bus == null) throw new ArgumentNullException("bus");
             if (eventStore == null) throw new ArgumentNullException("eventStore");
-            _bus = bus;
             _eventStore = eventStore;
         }
 
@@ -38,7 +35,7 @@ namespace CQRS.Core.Infrastructure
                     uncommittedEvent.SourceId = commandId;
                     stream.Add(new EventMessage {Body = uncommittedEvent});
                 }
-
+                
                 stream.CommitChanges(Guid.NewGuid());
             }
         }
